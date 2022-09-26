@@ -1,0 +1,20 @@
+{
+    "name": "sebas/framework",
+    "description": "My own framework php",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Http\\": "app/Http/",
+            "Core\\": "Core/",
+            "Helpers\\": "app/config/Helpers"
+        }
+    },
+    "authors": [{
+        "name": "GitHub-sebastien",
+        "email": "sebastien.ancelin7@gmail.com"
+    }],
+    "require": {
+        "symfony/var-dumper": "^6.1"
+    }
+}
