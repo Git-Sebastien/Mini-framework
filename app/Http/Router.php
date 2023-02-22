@@ -4,31 +4,85 @@ namespace Http;
 
 use Http\Route;
 
-class Router{
-    public $controller_name;
-    public $action;
-    public $routes = [];
+/**
+ * Class Router to generate route
+ */
+class Router{    
+    /**
+     * Stock the value of the controller 
+     *
+     * @var mixed
+     */
+    public $controller_name;    
+    /**
+     * Which method to invoke
+     *
+     * @var mixed
+     */
+    public $action;    
+    /**
+     * Stock all of the routes 
+     *
+     * @var array
+     */
+    public $routes = [];    
+    /**
+     * Get a route with a name
+     *
+     * @var array
+     */
     public $route_name = [];
+    
+    /**
+     * Determine if router match with uri
+     *
+     * @var bool
+     */
+    public $success = false;
 
-    public function get($uri,$controller_name,$action)
+    
+    /**
+     * Keep the value of slug 
+     *
+     * @var array
+     */
+    public $matches = [];
+    
+    /**
+     * Set route with  method GET
+     *
+     * @param  mixed $uri
+     * @param  mixed $controller_name
+     * @param  mixed $action
+     * @return Router
+     */
+    public function get($uri,$controller_name,$action) :Router
     {
        $routes = new Route($uri,$controller_name,$action);
             $this->routes[] = $routes; 
             return $this;
     }
-
-    public function post($uri,$controller_name,$action)
+    
+    /**
+     * Set route with method POST
+     *
+     * @param  mixed $uri
+     * @param  mixed $controller_name
+     * @param  mixed $action
+     * @return Router
+     */
+    public function post($uri,$controller_name,$action) :Router
     {
-       $routes = new Route($uri,$controller_name,$action);
-            $this->routes[] = $routes;   
-            return $this; 
+       $this->route = new Route($uri,$controller_name,$action);
+            $this->routes[] = $this->route;
+            return $this;
     }
     
     /**
      * Add the uri to the array route
      *
      * @param  mixed $route
-     * @return void
+     * @return Router
      */
 
     public function name(string $name): Router
@@ -37,17 +91,27 @@ class Router{
 
         return $this;
     }
-
+    
+    /**
+     * If route matche to URI,load the views
+     *
+     * @return void
+     */
     public function run()
     {
-        foreach($this->routes as $route) {
+        foreach($this->routes as $route){
             $action = $route->action;
-            if($_SERVER['REQUEST_URI'] == '/'.$route->uri){
+            $path = preg_replace('#:([\w]+)#', '([^/]+)', $route->uri);
+            $regex = "{^$path$}";
+            if($_SERVER['REQUEST_URI'] == $route->uri || preg_match($regex,$_SERVER['REQUEST_URI'],$matches)){
+                $this->matches[] = array_pop($matches);
                 $space = "\\App\\Controller\\" ;
                 $controller = $space . $route->controller;
                 $controller_name = new $controller();
-                $controller_name->$action();
+                $controller_name->$action($this->matches);
+                return true;
             }
         }
+        return false;
     }
 }

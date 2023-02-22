@@ -7,7 +7,7 @@ use Core\Interfaces\RenderMethod;
 
 class CommentsController extends Controller implements RenderMethod{
 
-    public function index()
+    public function index($id)
     {
         $lol = 'lol';
         $this->render('comments',compact('lol'));

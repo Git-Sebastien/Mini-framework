@@ -7,10 +7,9 @@ use Core\Interfaces\RenderMethod;
 
 class PostsController extends Controller implements RenderMethod{
 
-    public function index()
+    public function index($id)
     {
-        $var = "lol";
-        return $this->render('posts',compact('var'));
+        return $this->render('posts',[]);
     }
 
 }

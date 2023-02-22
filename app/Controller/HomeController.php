@@ -3,19 +3,25 @@
 namespace App\Controller;
 
 use Core\Controller;
-use Core\Database\Database;
 use Core\Facades\Query;
 use Core\Interfaces\RenderMethod;
+use App\Models\UsersManager;
 
 class HomeController extends Controller implements RenderMethod {
 
-    public function index()
+    public function index($id)
     {
-        $query = Query::table('users')
+        $user = Query::table('users')
         ->select('name')
-        ->where('name',"=","seb")
+        ->where('name',"=","Myla")
         ->get();
-        dd($query);
-        return $this->render('home',compact('query'));
+
+    //    $user =  UsersManager::create([
+    //         "name"=>"Myla",
+    //         "firstname"=>"Ancelin",
+    //         "email"=>"email@fr.fr"
+    //    ]);
+
+        return $this->render('home',compact('user'));
     }
 }
